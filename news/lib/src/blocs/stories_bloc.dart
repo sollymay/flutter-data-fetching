@@ -3,12 +3,11 @@ import 'package:rxdart/rxdart.dart';
 import '../models/item_model.dart';
 import '../resources/repository.dart';
 
-class StoriesBloc{
+class StoriesBloc {
   final _repository = Repository();
   final _topIds = PublishSubject<List<int>>();
   final _itemsOutput = BehaviorSubject<Map<int, Future<ItemModel>>>();
   final _itemsFetcher = PublishSubject<int>();
-
 
   //Getter to Streams
   Observable<List<int>> get topIds => _topIds.stream;
@@ -25,14 +24,13 @@ class StoriesBloc{
     _topIds.sink.add(ids);
   }
 
-  clearCache(){
+  clearCache() {
     return _repository.clearCache();
   }
 
   _itemsTransformer() {
     return ScanStreamTransformer(
       (Map<int, Future<ItemModel>> cache, int id, index) {
-        print(index);
         cache[id] = _repository.fetchItem(id);
         return cache;
       },
@@ -40,7 +38,7 @@ class StoriesBloc{
     );
   }
 
-  dispose(){
+  dispose() {
     _topIds.close();
     _itemsFetcher.close();
     _itemsOutput.close();
